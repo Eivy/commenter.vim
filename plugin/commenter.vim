@@ -1,7 +1,7 @@
 "File: commenter.vim
 "Author: Eivy <modern.times.rock.and.roll+git@gmail.com>
 "Description: Comment out plugin
-"Last Change: 13-Dec-2013.
+"Last Change: 15-Dec-2013.
 " vim: ts=4 sw=4 noet
 
 if has('loaded_commenter') | finish | endif
