@@ -55,6 +55,25 @@ function! commenter#comment_undo() range abort
 	endfor
 endf
 
+function! commenter#comment_toggle() range
+	let comment=commenter#get_comment_string()
+	for n in range(a:firstline,a:lastline)
+		let current = substitute(getline(n), '^\s*', '', '')
+		if current=='' | continue | endif
+		if current =~ '^'.escape(get(comment,'line'),'*+\').'\|^'.escape(get(comment,'start'),'\*+').'\|^'.escape(get(comment,'middle'),'\*+').'\|^'.escape(get(comment,'end'),'\*+')
+			let commentflg=1
+		else
+			let commentflg=0
+			break
+		endif
+	endfor
+	if commentflg
+		exec a:firstline.','.a:lastline.'call commenter#comment_undo()'
+	else
+		exec a:firstline.','.a:lastline.'call commenter#comment_out_line()'
+	endif
+endfunction
+
 function! commenter#get_comment_string()
 	if !exists('b:commenter_comments')
 		let b:commenter_comments={}
