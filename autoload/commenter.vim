@@ -1,7 +1,7 @@
 "File: commenter.vim
 "Author: Eivy <modern.times.rock.and.roll+git@gmail.com>
 "Description: 
-"Last Change: 15-Dec-2013.
+"Last Change: 17-Dec-2013.
 " vim: ts=4 sw=4 noet
 
 function! commenter#comment_out_line() abort
@@ -55,23 +55,26 @@ function! commenter#comment_undo() range abort
 endf
 
 function! commenter#get_comment_string()
-	let comment_dic={}
-	let comments=split(&com, '\\\@<!,')
-	for comment in comments
-		let list = split(comment, ':')
-		if len(list) < 2
-			let comment_dic['line']=list[0]
-			continue
-		endif
-		if list[0]=~'O'
-			let comment_dic['line']=join(list[1:], '')
-		elseif list[0]=~'s'
-			let comment_dic['start']=join(list[1:], '')
-		elseif list[0]=~'m'
-			let comment_dic['middle']=join(list[1:], '')
-		elseif list[0]=~'e'
-			let comment_dic['end']=join(list[1:], '')
-		endif
-	endfor
-	return comment_dic
+	if !exists('b:commenter_comments')
+		let b:commenter_comments={}
+		let comments=split(&com, '\\\@<!,')
+		for comment in comments
+			let list = split(comment, ':')
+			if len(list) < 2
+				let b:commenter_comments['line']=list[0]
+				continue
+			endif
+			let space=(list[0]=~'b')? ' ' : ''
+			if list[0]=~'O'
+				let b:commenter_comments['line']=join(list[1:], '').space
+			elseif list[0]=~'s'
+				let b:commenter_comments['start']=join(list[1:], '').space
+			elseif list[0]=~'m'
+				let b:commenter_comments['middle']=join(list[1:], '').space
+			elseif list[0]=~'e'
+				let b:commenter_comments['end']=join(list[1:], '').space
+			endif
+		endfor
+	endif
+	return b:commenter_comments
 endf
