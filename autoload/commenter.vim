@@ -36,18 +36,19 @@ endf
 function! commenter#comment_undo() range abort
 	let comment=commenter#get_comment_string()
 	let [start, end] = [a:firstline, a:lastline]
-	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*\').'\s*$'
+	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*+\').'\s*$'
 		execute start.'d'
 		let start -= 1
 		let end -= 1
 	endif
-	if has_key(comment, 'end') && getline(end) =~ '^\s*'.escape(comment['end'], '*\').'\s*$'
+	if has_key(comment, 'end') && getline(end) =~ '^\s*'.escape(comment['end'], '*+\').'\s*$'
 		execute end.'d'
 		let end -= 1
 	endif
 	for lnum in range(end, start, -1)
 		let line=getline(lnum)
 		for comstr in values(comment)
+			let comstr='^\s*\zs'.escape(comstr,'\*')
 			let line=substitute(line, comstr, '', '')
 		endfor
 		call setline(lnum, line)
