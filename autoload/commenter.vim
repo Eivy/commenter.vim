@@ -12,8 +12,12 @@ function! commenter#comment_out_line() abort
 		let line=substitute(getline(lnum), '\ze\S', comstr, '')
 	elseif has_key(comment, 'start') && has_key(comment, 'end')
 		let line=getline(lnum)
-		let line=substitute(line, '\ze\S', comment['start'], '')
-		let line=substitute(line, '$', comment['end'], '')
+		if line!=''
+			let line=substitute(line, '\ze\S', comment['start'], '')
+			let line=substitute(line, '$', comment['end'], '')
+		else
+			unlet! line
+		endif
 	endif
 	if exists('line') | call setline(lnum, line) | endif
 endf
