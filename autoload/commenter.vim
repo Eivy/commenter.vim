@@ -1,7 +1,7 @@
 "File: commenter.vim
 "Author: Eivy <modern.times.rock.and.roll+git@gmail.com>
 "Description: 
-"Last Change: 17-Dec-2013.
+"Last Change: 18-Dec-2013.
 " vim: ts=4 sw=4 noet
 
 function! commenter#comment_out_line() abort
@@ -79,26 +79,27 @@ function! commenter#comment_toggle() range
 endfunction
 
 function! commenter#get_comment_string()
-	if !exists('b:commenter_comments')
-		let b:commenter_comments={}
+	if !exists('s:comment_'.&ft)
+		let dic={}
 		let comments=split(&com, '\\\@<!,')
 		for comment in comments
 			let list = split(comment, ':')
 			if len(list) < 2
-				let b:commenter_comments['line']=list[0]
+				let dic['line']=list[0]
 				continue
 			endif
 			let space=(list[0]=~'b')? ' ' : ''
 			if list[0]=~'O'
-				let b:commenter_comments['line']=join(list[1:], '').space
+				let dic['line']=join(list[1:], '').space
 			elseif list[0]=~'s'
-				let b:commenter_comments['start']=join(list[1:], '').space
+				let dic['start']=join(list[1:], '').space
 			elseif list[0]=~'m'
-				let b:commenter_comments['middle']=join(list[1:], '').space
+				let dic['middle']=join(list[1:], '').space
 			elseif list[0]=~'e'
-				let b:commenter_comments['end']=join(list[1:], '').space
+				let dic['end']=join(list[1:], '').space
 			endif
 		endfor
+		exec 'let s:comment_'.&ft.'=dic'
 	endif
-	return b:commenter_comments
+	exec 'return s:comment_'.&ft
 endf
