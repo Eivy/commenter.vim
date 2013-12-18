@@ -61,12 +61,11 @@ endf
 
 function! commenter#comment_toggle() range
 	let comment=commenter#get_comment_string()
+	let commentflg=1
 	for n in range(a:firstline,a:lastline)
-		let current = substitute(getline(n), '^\s*', '', '')
+		let current = getline(n)
 		if current=='' | continue | endif
-		if current =~ '^'.escape(get(comment,'line'),'*+\').'\|^'.escape(get(comment,'start'),'\*+').'\|^'.escape(get(comment,'middle'),'\*+').'\|^'.escape(get(comment,'end'),'\*+')
-			let commentflg=1
-		else
+		if current !~ '^\s*\%('.join(map(values(comment), "escape(v:val,'*+\')"),'\|').'\)'
 			let commentflg=0
 			break
 		endif
