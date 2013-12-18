@@ -15,7 +15,7 @@ function! commenter#comment_out_line() abort
 		let line=substitute(line, '\ze\S', comment['start'], '')
 		let line=substitute(line, '$', comment['end'], '')
 	endif
-	call setline(lnum, line)
+	if exists('line') | call setline(lnum, line) | endif
 endf
 
 function! commenter#comment_out_block() range abort
