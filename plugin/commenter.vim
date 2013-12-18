@@ -4,8 +4,8 @@
 "Last Change: 17-Dec-2013.
 " vim: ts=4 sw=4 noet
 
-if has('loaded_commenter') | finish | endif
-let loaded_commenter=1
+if has('g:loaded_commenter') | finish | endif
+let g:loaded_commenter=1
 
 noremap <silent> <Plug>(Commenter-line)		:call commenter#comment_out_line()<CR>
 noremap <silent> <Plug>(Commenter-block)	:call commenter#comment_out_block()<CR>
