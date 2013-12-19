@@ -48,9 +48,13 @@ function! commenter#comment_out_block(...) range abort
 	endif
 endf
 
-function! commenter#comment_undo() range abort
+function! commenter#comment_undo(...) range abort
 	let comment=commenter#get_comment_string()
-	let [start, end] = [a:firstline, a:lastline]
+	if a:0
+		let [start,end]=[line("'["),line("']")]
+	else
+		let [start,end]=[a:firstline,a:lastline]
+	endif
 	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*+\').'\s*$'
 		execute start.'d'
 		let start -= 1
