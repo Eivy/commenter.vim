@@ -28,18 +28,23 @@ function! commenter#comment_out_line(...) range abort
 	endfor
 endf
 
-function! commenter#comment_out_block() range abort
+function! commenter#comment_out_block(...) range abort
 	let l:comment=commenter#get_comment_string()
-	let indent = matchstr(getline(a:firstline), '^\s*')
+	if a:0
+		let [start,end]=[line("'["),line("']")]
+	else
+		let [start,end]=[a:firstline,a:lastline]
+	endif
+	let indent = matchstr(getline(start), '^\s*')
 	if has_key(comment, 'start') && has_key(comment, 'middle') && has_key(comment, 'end')
-		for l:lnum in range(a:firstline, a:lastline)
+		for l:lnum in range(start, end)
 			let l:line=substitute(getline(lnum), '\%('.indent.'\|^\)\zs', comment['middle'], '')
 			call setline(lnum, line)
 		endfor
-		call append(a:firstline-1, indent.comment['start'])
-		call append(a:lastline+1, indent.comment['end'])
+		call append(start-1, indent.comment['start'])
+		call append(end+1, indent.comment['end'])
 	elseif has_key(comment, 'line')
-		execute a:firstline.','.a:lastline.'call commenter#comment_out_line()'
+		execute start.','.end.'call commenter#comment_out_line()'
 	endif
 endf
 
