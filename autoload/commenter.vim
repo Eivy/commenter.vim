@@ -1,25 +1,31 @@
 "File: commenter.vim
 "Author: Eivy <modern.times.rock.and.roll+git@gmail.com>
 "Description: 
-"Last Change: 18-Dec-2013.
+"Last Change: 19-Dec-2013.
 " vim: ts=4 sw=4 noet
 
-function! commenter#comment_out_line() abort
+function! commenter#comment_out_line(...) range abort
 	let comment=commenter#get_comment_string()
-	let lnum=line('.')
-	if has_key(comment, 'line')
-		let comstr=comment['line']
-		let line=substitute(getline(lnum), '\ze\S', comstr, '')
-	elseif has_key(comment, 'start') && has_key(comment, 'end')
-		let line=getline(lnum)
-		if line!=''
-			let line=substitute(line, '\ze\S', comment['start'], '')
-			let line=substitute(line, '$', comment['end'], '')
-		else
-			unlet! line
-		endif
+	if a:0
+		let [start,end]=[line("'["),line("']")]
+	else
+		let [start,end]=[a:firstline,a:lastline]
 	endif
-	if exists('line') | call setline(lnum, line) | endif
+	for lnum in range(start,end)
+		if has_key(comment, 'line')
+			let comstr=comment['line']
+			let line=substitute(getline(lnum), '\ze\S', comstr, '')
+		elseif has_key(comment, 'start') && has_key(comment, 'end')
+			let line=getline(lnum)
+			if line!=''
+				let line=substitute(line, '\ze\S', comment['start'], '')
+				let line=substitute(line, '$', comment['end'], '')
+			else
+				unlet! line
+			endif
+		endif
+		if exists('line') | call setline(lnum, line) | endif
+	endfor
 endf
 
 function! commenter#comment_out_block() range abort
