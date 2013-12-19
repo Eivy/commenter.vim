@@ -74,10 +74,15 @@ function! commenter#comment_undo(...) range abort
 	endfor
 endf
 
-function! commenter#comment_toggle() range
+function! commenter#comment_toggle(...) range
 	let comment=commenter#get_comment_string()
+	if a:0
+		let [start,end]=[line("'["),line("']")]
+	else
+		let [start,end]=[a:firstline,a:lastline]
+	endif
 	let commentflg=1
-	for n in range(a:firstline,a:lastline)
+	for n in range(start,end)
 		let current = getline(n)
 		if current=='' | continue | endif
 		if current !~ '^\s*\%('.join(map(values(comment), "escape(v:val,'*+\')"),'\|').'\)'
@@ -86,9 +91,9 @@ function! commenter#comment_toggle() range
 		endif
 	endfor
 	if commentflg
-		exec a:firstline.','.a:lastline.'call commenter#comment_undo()'
+		exec start.','.end.'call commenter#comment_undo()'
 	else
-		exec a:firstline.','.a:lastline.'call commenter#comment_out_line()'
+		exec start.','.end.'call commenter#comment_out_line()'
 	endif
 endfunction
 
