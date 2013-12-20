@@ -55,19 +55,19 @@ function! commenter#comment_undo(...) range abort
 	else
 		let [start,end]=[a:firstline,a:lastline]
 	endif
-	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*+\').'\s*$'
+	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*.\').'\s*$'
 		execute start.'d'
 		let start -= 1
 		let end -= 1
 	endif
-	if has_key(comment, 'end') && getline(end) =~ '^\s*'.escape(comment['end'], '*+\').'\s*$'
+	if has_key(comment, 'end') && getline(end) =~ '^\s*'.escape(comment['end'], '*.\').'\s*$'
 		execute end.'d'
 		let end -= 1
 	endif
 	for lnum in range(end, start, -1)
 		let line=getline(lnum)
 		for comstr in values(comment)
-			let comstr='^\s*\zs'.escape(comstr,'\*')
+			let comstr='^\s*\zs'.escape(comstr,'*.\')
 			let line=substitute(line, comstr, '', '')
 		endfor
 		call setline(lnum, line)
@@ -85,7 +85,7 @@ function! commenter#comment_toggle(...) range
 	for n in range(start,end)
 		let current = getline(n)
 		if current=='' | continue | endif
-		if current !~ '^\s*\%('.join(map(values(comment), "escape(v:val,'*+\')"),'\|').'\)'
+		if current !~ '^\s*\%('.join(map(values(comment), "escape(v:val,'*.\')"),'\|').'\)'
 			let commentflg=0
 			break
 		endif
