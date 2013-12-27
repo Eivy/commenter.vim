@@ -43,16 +43,7 @@ endf
 function! commenter#comment_undo(...) range abort
 	let comment=commenter#get_comment_string()
 	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
-	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*.\').'\s*$'
-		execute start.'d'
-		let start -= 1
-		let end -= 1
-	endif
-	if has_key(comment, 'end') && getline(end) =~ '^\s*'.escape(comment['end'], '*.\').'\s*$'
-		execute end.'d'
-		let end -= 1
-	endif
-	for lnum in range(end, start, -1)
+	for lnum in range(start,end)
 		let line=getline(lnum)
 		for comstr in values(comment)
 			let comstr='^\s*\zs'.escape(comstr,'*.\')
@@ -60,6 +51,8 @@ function! commenter#comment_undo(...) range abort
 		endfor
 		call setline(lnum, line)
 	endfor
+	if getline(end) =~ '^\s*$' | exec end.'d' | endif
+	if getline(start) =~ '^\s*$' | exec start.'d' | endif
 endf
 
 function! commenter#comment_toggle(...) range
