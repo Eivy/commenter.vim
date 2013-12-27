@@ -1,16 +1,12 @@
 "File: commenter.vim
 "Author: Eivy <modern.times.rock.and.roll+git@gmail.com>
 "Description: 
-"Last Change: 19-Dec-2013.
+"Last Change: 27-Dec-2013.
 " vim: ts=4 sw=4 noet
 
 function! commenter#comment_out_line(...) range abort
 	let comment=commenter#get_comment_string()
-	if a:0
-		let [start,end]=[line("'["),line("']")]
-	else
-		let [start,end]=[a:firstline,a:lastline]
-	endif
+	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
 	for lnum in range(start,end)
 		if has_key(comment, 'line')
 			let comstr=comment['line']
@@ -30,11 +26,7 @@ endf
 
 function! commenter#comment_out_block(...) range abort
 	let l:comment=commenter#get_comment_string()
-	if a:0
-		let [start,end]=[line("'["),line("']")]
-	else
-		let [start,end]=[a:firstline,a:lastline]
-	endif
+	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
 	let indent = matchstr(getline(start), '^\s*')
 	if has_key(comment, 'start') && has_key(comment, 'middle') && has_key(comment, 'end')
 		for l:lnum in range(start, end)
@@ -50,11 +42,7 @@ endf
 
 function! commenter#comment_undo(...) range abort
 	let comment=commenter#get_comment_string()
-	if a:0
-		let [start,end]=[line("'["),line("']")]
-	else
-		let [start,end]=[a:firstline,a:lastline]
-	endif
+	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
 	if has_key(comment, 'start') && getline(start) =~ '^\s*'.escape(comment['start'], '*.\').'\s*$'
 		execute start.'d'
 		let start -= 1
@@ -76,11 +64,7 @@ endf
 
 function! commenter#comment_toggle(...) range
 	let comment=commenter#get_comment_string()
-	if a:0
-		let [start,end]=[line("'["),line("']")]
-	else
-		let [start,end]=[a:firstline,a:lastline]
-	endif
+	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
 	let commentflg=1
 	for n in range(start,end)
 		let current = getline(n)
