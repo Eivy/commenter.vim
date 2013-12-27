@@ -86,14 +86,15 @@ function! commenter#get_comment_string()
 			endif
 			let space=(list[0]=~'b')? ' ' : ''
 			if list[0]=~'O'
-				let dic['line']=join(list[1:], '').space
+				let type='line'
 			elseif list[0]=~'s'
-				let dic['start']=join(list[1:], '').space
+				let type='start'
 			elseif list[0]=~'m'
-				let dic['middle']=join(list[1:], '').space
+				let type='middle'
 			elseif list[0]=~'e'
-				let dic['end']=join(list[1:], '').space
+				let type='end'
 			endif
+			let dic[type]=join(list[1:], '').space
 		endfor
 		exec 'let s:comment_'.&ft.'=dic'
 	endif
