@@ -41,12 +41,12 @@ function! commenter#comment_out_block(...) range abort
 endf
 
 function! commenter#comment_undo(...) range abort
-	let comment=commenter#get_comment_string()
+	let comment=copy(commenter#get_comment_string())
 	let [start,end] = a:0 ? [line("'["),line("']")] : [a:firstline,a:lastline]
 	for lnum in range(start,end)
 		let line=getline(lnum)
-		for comstr in values(comment)
-			let comstr='^\s*\zs'.escape(comstr,'*.\')
+		for comstr in sort(values(map(comment,"escape(v:val,'*.\')")))
+			let comstr='^\s*\zs'.comstr.'\|'.comstr.'\s*$'
 			let line=substitute(line, comstr, '', '')
 		endfor
 		call setline(lnum, line)
